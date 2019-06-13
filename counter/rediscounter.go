@@ -15,6 +15,31 @@ type RedisCounter struct {
 	expirySeconds int
 }
 
+func NewRedisCounter(key, redisAddress, redisPassword string, expirySeconds int) (*RedisCounter, error) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     redisAddress,
+		Password: redisPassword,
+		DB:       0, // use default DB
+	})
+	_, err := client.Ping().Result()
+	if err != nil {
+		return nil, errors.Wrap(err, "problem pinging redis")
+	}
+
+	// Check if we need to initialize the default value
+	_, err = client.Get(key).Result()
+	if err == redis.Nil {
+		err := client.Set(key, int64(0), time.Second*time.Duration(expirySeconds))
+		if err != nil {
+			logrus.Fatalf("unable to set initial lock: %v", err)
+		}
+		logrus.Infof("%v initialized in redis to 0", key)
+	}
+	logrus.Info("Initialized DistLock in this node.")
+
+	return &RedisCounter{key: key, mutex: sync.Mutex{}, client: client, expirySeconds: expirySeconds}, nil
+}
+
 func (dl *RedisCounter) Decr() {
 	dl.mutex.Lock()
 	defer dl.mutex.Unlock()
@@ -53,7 +78,7 @@ func (dl *RedisCounter) Get() int64 {
 	res := dl.client.Get(dl.key)
 	_, err := res.Result()
 	if err == redis.Nil {
-		return 0
+		return -1
 	}
 	val, _ := res.Int64()
 	return val

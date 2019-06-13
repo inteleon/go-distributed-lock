@@ -6,10 +6,14 @@ import (
 )
 
 type InMemoryCounter struct {
-	key string
-	mutex  sync.Mutex
-	count int64
+	key       string
+	mutex     sync.Mutex
+	count     int64
 	expiresAt time.Time
+}
+
+func NewInMemoryCounter(key string, expiresAt time.Time) *InMemoryCounter {
+	return &InMemoryCounter{key: key, mutex: sync.Mutex{}, count: int64(0), expiresAt: expiresAt}
 }
 
 func (dl *InMemoryCounter) Decr() {
@@ -43,5 +47,3 @@ func (dl *InMemoryCounter) Set(cnt int64) error {
 func (dl *InMemoryCounter) Close() {
 	// Noop
 }
-
-

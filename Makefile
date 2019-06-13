@@ -1,6 +1,13 @@
 TEST_RESULTS=/tmp/test-results
 
-all: test
+fmt:
+	go fmt ./...
+
+test:
+	go test ./...
+
+build:
+	go build ./...
 
 mock:
 	mockgen -source counter/counter.go -destination counter/mock_counter/mock_counter.go -package mock_counter

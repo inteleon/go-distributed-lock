@@ -9,31 +9,31 @@ import (
 	reflect "reflect"
 )
 
-// MockDistCounter is a mock of DistCounter interface
-type MockDistCounter struct {
+// MockCounter is a mock of Counter interface
+type MockCounter struct {
 	ctrl     *gomock.Controller
-	recorder *MockDistCounterMockRecorder
+	recorder *MockCounterMockRecorder
 }
 
-// MockDistCounterMockRecorder is the mock recorder for MockDistCounter
-type MockDistCounterMockRecorder struct {
-	mock *MockDistCounter
+// MockCounterMockRecorder is the mock recorder for MockCounter
+type MockCounterMockRecorder struct {
+	mock *MockCounter
 }
 
-// NewMockDistCounter creates a new mock instance
-func NewMockDistCounter(ctrl *gomock.Controller) *MockDistCounter {
-	mock := &MockDistCounter{ctrl: ctrl}
-	mock.recorder = &MockDistCounterMockRecorder{mock}
+// NewMockCounter creates a new mock instance
+func NewMockCounter(ctrl *gomock.Controller) *MockCounter {
+	mock := &MockCounter{ctrl: ctrl}
+	mock.recorder = &MockCounterMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use
-func (m *MockDistCounter) EXPECT() *MockDistCounterMockRecorder {
+func (m *MockCounter) EXPECT() *MockCounterMockRecorder {
 	return m.recorder
 }
 
 // IsLocked mocks base method
-func (m *MockDistCounter) IsLocked() bool {
+func (m *MockCounter) IsLocked() bool {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "IsLocked")
 	ret0, _ := ret[0].(bool)
@@ -41,37 +41,39 @@ func (m *MockDistCounter) IsLocked() bool {
 }
 
 // IsLocked indicates an expected call of IsLocked
-func (mr *MockDistCounterMockRecorder) IsLocked() *gomock.Call {
+func (mr *MockCounterMockRecorder) IsLocked() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsLocked", reflect.TypeOf((*MockDistCounter)(nil).IsLocked))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsLocked", reflect.TypeOf((*MockCounter)(nil).IsLocked))
 }
 
 // Decr mocks base method
-func (m *MockDistCounter) Decr() {
+func (m *MockCounter) Decr() {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Decr")
 }
 
 // Decr indicates an expected call of Decr
-func (mr *MockDistCounterMockRecorder) Decr() *gomock.Call {
+func (mr *MockCounterMockRecorder) Decr() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Decr", reflect.TypeOf((*MockDistCounter)(nil).Decr))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Decr", reflect.TypeOf((*MockCounter)(nil).Decr))
 }
 
 // Set mocks base method
-func (m *MockDistCounter) Set(count int64) {
+func (m *MockCounter) Set(count int64) error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Set", count)
+	ret := m.ctrl.Call(m, "Set", count)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Set indicates an expected call of Set
-func (mr *MockDistCounterMockRecorder) Set(count interface{}) *gomock.Call {
+func (mr *MockCounterMockRecorder) Set(count interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockDistCounter)(nil).Set), count)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockCounter)(nil).Set), count)
 }
 
 // Get mocks base method
-func (m *MockDistCounter) Get() int64 {
+func (m *MockCounter) Get() int64 {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get")
 	ret0, _ := ret[0].(int64)
@@ -79,19 +81,19 @@ func (m *MockDistCounter) Get() int64 {
 }
 
 // Get indicates an expected call of Get
-func (mr *MockDistCounterMockRecorder) Get() *gomock.Call {
+func (mr *MockCounterMockRecorder) Get() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockDistCounter)(nil).Get))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockCounter)(nil).Get))
 }
 
 // Close mocks base method
-func (m *MockDistCounter) Close() {
+func (m *MockCounter) Close() {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Close")
 }
 
 // Close indicates an expected call of Close
-func (mr *MockDistCounterMockRecorder) Close() *gomock.Call {
+func (mr *MockCounterMockRecorder) Close() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockDistCounter)(nil).Close))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockCounter)(nil).Close))
 }
