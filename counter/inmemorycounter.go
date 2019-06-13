@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// InMemoryCounter is typically used for local testing without a proper KV store available.
 type InMemoryCounter struct {
 	key       string
 	mutex     sync.Mutex
@@ -16,6 +17,7 @@ func NewInMemoryCounter(key string, expiresAt time.Time) *InMemoryCounter {
 	return &InMemoryCounter{key: key, mutex: sync.Mutex{}, count: int64(0), expiresAt: expiresAt}
 }
 
+// Decr decreases the counter by one.
 func (dl *InMemoryCounter) Decr() {
 	dl.mutex.Lock()
 	defer dl.mutex.Unlock()
@@ -24,12 +26,14 @@ func (dl *InMemoryCounter) Decr() {
 	}
 }
 
+// IsLocked returns true if the counter has a value greater than zero.
 func (dl *InMemoryCounter) IsLocked() bool {
 	dl.mutex.Lock()
 	defer dl.mutex.Unlock()
 	return dl.count > 0
 }
 
+// Get returns the current value of the counter.
 func (dl *InMemoryCounter) Get() int64 {
 	dl.mutex.Lock()
 	defer dl.mutex.Unlock()

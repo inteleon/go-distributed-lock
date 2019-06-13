@@ -8,13 +8,15 @@ import (
 	"time"
 )
 
+// RedisCounter implements a distributed counter using Redis as backing store for the integer counter.
 type RedisCounter struct {
 	key           string
 	mutex         sync.Mutex
-	client        *redis.Client
+	client        redis.UniversalClient
 	expirySeconds int
 }
 
+// NewRedisCounter creates a counter backed by a redis client with the supplied address and password.
 func NewRedisCounter(key, redisAddress, redisPassword string, expirySeconds int) (*RedisCounter, error) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     redisAddress,
@@ -40,6 +42,7 @@ func NewRedisCounter(key, redisAddress, redisPassword string, expirySeconds int)
 	return &RedisCounter{key: key, mutex: sync.Mutex{}, client: client, expirySeconds: expirySeconds}, nil
 }
 
+// Decr decreases the counter by one.
 func (dl *RedisCounter) Decr() {
 	dl.mutex.Lock()
 	defer dl.mutex.Unlock()
@@ -60,6 +63,7 @@ func (dl *RedisCounter) Decr() {
 	}
 }
 
+// IsLocked returns true if the counter is set and has a value greater than zero.
 func (dl *RedisCounter) IsLocked() bool {
 	dl.mutex.Lock()
 	defer dl.mutex.Unlock()
@@ -72,6 +76,7 @@ func (dl *RedisCounter) IsLocked() bool {
 	return val > 0
 }
 
+// Get returns the current value of the counter. If the counter is not set / expired, -1 is returned.
 func (dl *RedisCounter) Get() int64 {
 	dl.mutex.Lock()
 	defer dl.mutex.Unlock()
@@ -97,6 +102,9 @@ func (dl *RedisCounter) Set(cnt int64) error {
 	return nil
 }
 
+// Close closes the redis client.
 func (dl *RedisCounter) Close() {
-	dl.client.Close()
+	if dl.client != nil {
+		dl.client.Close()
+	}
 }
