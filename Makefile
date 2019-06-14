@@ -14,6 +14,7 @@ build:
 
 mock:
 	mockgen -source counter/counter.go -destination counter/mock_counter/mock_counter.go -package mock_counter
+	mockgen github.com/go-redis/redis UniversalClient > mock_redis/mock_redis.go
 
 coverage:
 	@mkdir -p ${TEST_RESULTS}

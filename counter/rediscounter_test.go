@@ -44,18 +44,18 @@ func TestRedisCounter(t *testing.T) {
 }
 
 func buildResp(i int64) *redis.StringCmd {
-	res := redis.NewStringCmd()
+	stringCmd := redis.NewStringCmd()
 
 	str := strconv.Itoa(int(i))
 
 	// This horrible code uses reflection and unsafe tricks to mutate the unexported "val" of the StringCmd
 	// so we can mock the response with our supplied value.
-	reflectedStruct := reflect.ValueOf(res).Elem() // Get the elem of the return struct
-	fieldToSet := reflectedStruct.Field(1)         // Get the second field of the struct (the val)
-	valueToSet := reflect.ValueOf(&str).Elem()     // Get value to set as reflect.Value
+	reflectedStruct := reflect.ValueOf(stringCmd).Elem() // Get the elem of the return struct
+	fieldToSet := reflectedStruct.Field(1)               // Get the second field of the struct (the val)
+	valueToSet := reflect.ValueOf(&str).Elem()           // Get value to set as reflect.Value
 
 	// This is h4xx to make it possible to mutate the unexported field
 	fieldToSet = reflect.NewAt(fieldToSet.Type(), unsafe.Pointer(fieldToSet.UnsafeAddr())).Elem()
 	fieldToSet.Set(valueToSet)
-	return res
+	return stringCmd
 }
